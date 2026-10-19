@@ -22,6 +22,11 @@ SYSTEM_PROMPT = """
 生命食谱中的“食谱”不只指食物，也包括运动、睡眠、
 电影、音乐、阅读、社交等能够丰富生活体验的活动。
 尊重用户自主选择，不把生活安排变成强制打卡。
+每个人都有选择自己人生的权利，没有一种生活方式适合所有人。
+你的职责不是替用户决定应该怎样生活，而是帮助用户了解更多可能，
+提供可选择、可调整的建议，并尊重用户接受、修改或拒绝建议的权利。
+不要把健康、效率、成长或完成任务的数量当作衡量一个人价值的唯一标准。
+用户不必为了符合某种理想标准而生活，也不应因没有完成建议而受到责备。
 不要编造用户的体征、睡眠或健康数据，不进行疾病诊断。
 不要建议极端节食或不安全的活动。
 涉及严重、持续或紧急的健康问题时，建议向可信赖的成年人
@@ -274,13 +279,69 @@ def get_category_interests(category, interests):
 
     # 没有直接匹配的兴趣时，让 AI 以类别目标为主
     return "未指定"
+# ==================== 生命食谱：理念与文字档案 ====================
+
+LIFE_COOKBOOK_PHILOSOPHY = {
+    "核心理念": (
+        "生命食谱不是替每个人规定生活应该是什么样子，"
+        "而是帮助每个人找到属于自己的人生菜单。"
+        "菜单不需要多么华丽、轰轰烈烈，适合自己就好。"
+        "无论是爆辣入口、椒麻鲜香、浓油赤酱、老汤吊鲜，"
+        "还是粗茶淡饭，你的人生亦由你自己决定口味。"
+    ),
+
+    "人生感悟": (
+        "所有人都不可能完美，你、我，大家亦然。"
+        "生命中有太多的可能，交织成独一无二的你。"
+        "没有哪一种滋味必须被所有人认可，"
+        "也没有哪一份人生菜单需要做到尽善尽美。"
+        "去感受，去经历，去选择，去成为你自己。"
+    ),
+
+    "善良与边界": (
+        "有时真正的善良是不必对他人负责到底，"
+        "因为他们有自己的路要走；"
+        "也不必对自己过于严苛，"
+        "因为你已经做得很棒了。"
+    ),
+
+    "四季诗句": (
+        "春天青风温如水，"
+        "夏天淡阳依如木，"
+        "秋天褐叶悯如土，"
+        "冬天盛雪动如天"
+    ),
+
+    "星空寄语": (
+        "世界没那么完美，但请抬头看看星空。"
+        "你我都属于星星的孩子。"
+        "不必缅怀，不必憎恶，"
+        "不必强求感激，也不必深恋不放。"
+        "愿你在有限的岁月里，尝到自己喜欢的滋味，"
+        "见到自己想看的风景，也能在疲惫时安心歇一歇。"
+        "生命无常，愿你安好。"
+    ),
+
+    "AI行为原则": [
+        "人生菜单由用户自己决定，AI提供建议而不替用户做主。",
+        "尊重用户的自主选择，不强迫用户完成每日清单。",
+        "不以健康分数、匹配分数或完成次数定义一个人的价值。",
+        "结合用户的状态、兴趣和可用时间提供建议，不强行套用兴趣。",
+        "用户可以休息、改变计划，也可以暂时什么都不做。",
+        "尊重人与人之间的边界，不要求用户为所有人的选择负责到底。",
+        "回应用户时保持尊重，不因用户暂时没有行动而指责或羞辱用户。",
+        "生活建议应当务实、适度，不把普通建议包装成诊断或治疗结论。",
+    ],
+}
+
+# ================================================================
 # 页面样式
 # =========================================================
 
 ui.query("body").style(
     "background-color: #F8FAFC; margin: 0; padding: 0; "
-    'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", '
-    "Roboto, sans-serif;"
+    'font-family: -apple-system, BlinkMacSystemFont, '
+    '"Segoe UI", "Microsoft YaHei", sans-serif;'
 )
 
 
@@ -415,6 +476,34 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
                     on_click=check_api_config,
                 ).classes("w-full")
 
+            ui.separator()
+
+            ui.label("🌱 生命食谱的初心").classes(
+                "text-sm font-bold text-slate-800"
+            )
+
+            ui.label(
+                "每个人，都有选择自己人生的权利。"
+            ).classes(
+                "text-sm font-semibold text-slate-700 leading-6"
+            )
+
+            ui.label(
+                "我们不替你决定该怎样生活，"
+                "也不要求你成为别人眼中的理想模样。"
+                "生命食谱希望借助 AI，"
+                "陪你探索更多可能，"
+                "而人生的方向，始终由你自己选择。"
+            ).classes(
+                "text-xs text-slate-500 leading-6"
+            )
+
+            ui.label(
+                "生命无常，愿你安好。"
+            ).classes(
+                "text-sm text-slate-600 leading-6"
+            )
+
         # 右侧工作区
         with ui.column().classes("flex-1 gap-6 min-w-0"):
 
@@ -471,10 +560,10 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
                 "w-full bg-white rounded-xl p-2 shadow-sm "
                 "border border-slate-100 text-slate-700"
             ) as tabs:
-                tc = ui.tab("💬 AI 智能对话")
-                t1 = ui.tab("🩺 体检报告解析（演示）")
-                t2 = ui.tab("🎯 生活方式食谱")
-                t3 = ui.tab("📊 反馈追踪（演示）")
+                tc = ui.tab("💬 生命对话")
+                t1 = ui.tab("🩺 健康解读")
+                t2 = ui.tab("🍃 人生菜单")
+                t3 = ui.tab("📈 成长回响")
 
             with ui.tab_panels(tabs, value=tc).classes(
                 "w-full bg-transparent"
@@ -486,9 +575,13 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
                         "p-6 bg-white shadow-sm rounded-2xl "
                         "border border-slate-100 w-full gap-4"
                     ):
-                        ui.label("🤖 生命食谱 AI 助手").classes(
+                        ui.label("🤖 生命对话").classes(
                             "text-base font-bold text-slate-800"
                         )
+                        ui.label("在交流中梳理想法，找到适合自己的生活方式").classes(
+                            "text-sm text-slate-500"
+                        )
+
                         ui.label().bind_text_from(
                             state,
                             "model_provider",
@@ -618,9 +711,13 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
                         "p-6 bg-white shadow-sm rounded-2xl "
                         "border border-slate-100 w-full gap-4"
                     ):
-                        ui.label("🩺 体检报告解析").classes(
-                            "text-base font-bold text-slate-800"
+                        ui.label("🩺 健康解读").classes(
+                            "text-xl font-bold text-slate-800"
                         )
+                        ui.label("读懂身体的信笺，了解报告中的指标与含义").classes(
+                            "text-sm text-slate-500"
+                        )
+
                         ui.label(
                             "此模块目前只是界面演示，上传文件不会自动完成识别。"
                             "请勿上传真实敏感健康资料用于未验证的功能。"
@@ -642,20 +739,28 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
 
                 # 生活方式食谱演示模块
                 with ui.tab_panel(t2):
-
-
                     recipe_categories = ["营养", "活力", "修复", "心灵"]
                     recipe_texts = {}
+                    recipe_match_labels = {}
                     recipe_status = None
 
                     with ui.card().classes("w-full p-5"):
-                        ui.label("🧬 生命食谱").classes(
-                            "text-2xl font-bold text-gray-800"
+                        ui.label("🍃 人生菜单").classes(
+                            "text-xl font-bold text-slate-800"
                         )
+
                         ui.label(
-                            "生活不只有饮食。让 AI 根据你的时间与偏好，"
-                            "为营养、活力、修复和心灵生成可执行的生活建议。"
-                        ).classes("text-gray-600")
+                            "人生不只有一种活法，生活也不只有一种滋味。"
+                            "有人喜欢爆辣入口，有人偏爱椒麻鲜香；"
+                            "有人钟情浓油赤酱，有人满足于粗茶淡饭。"
+                            "没有哪一种人生必须成为标准答案，"
+                            "适合自己的，就是属于自己的菜单。"
+                        ).classes("text-sm text-slate-600 leading-7")
+
+                        ui.label(
+                            "根据今天的心情、兴趣与可用时间，"
+                            "为营养、活力、修复与心灵，调配属于今天的生活建议。"
+                        ).classes("text-sm text-slate-500 leading-6")
 
                         with ui.row().classes("w-full items-end gap-4"):
                             preferred_category = ui.select(
@@ -753,14 +858,24 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
                                     ).props("outline")
 
 
-                                def get_today_interests():
-                                    selected = [
-                                        activity
-                                        for activity, checkbox in activity_checks.items()
-                                        if checkbox.value
-                                    ]
-                                    selected.extend(custom_activities)
-                                    return "、".join(selected) if selected else "未指定"
+                            def get_today_interests():
+                                selected = [
+                                    activity
+                                    for activity, checkbox in activity_checks.items()
+                                    if checkbox.value
+                                ]
+
+                                selected.extend(
+                                    activity.strip()
+                                    for activity in custom_activities
+                                    if isinstance(activity, str) and activity.strip()
+                                )
+
+                                # 去除重复兴趣，同时保留用户选择的顺序
+                                selected = list(dict.fromkeys(selected))
+
+                                return "、".join(selected) if selected else "未指定"
+
 
 
 
@@ -768,7 +883,7 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
 
                         with ui.row().classes("w-full items-center"):
                             generate_button = ui.button(
-                                "✨ 生成今日生活食谱"
+                                "✨ 调配今日菜单"
                             ).classes(
                                 "bg-blue-600 text-white font-bold px-6 py-3 rounded-xl"
                             )
@@ -777,10 +892,17 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
                                 "尚未生成。点击按钮开始。"
                             ).classes("text-gray-500")
 
-                        ui.separator()
+                            ui.separator()
 
-                        with ui.grid(columns=2).classes("w-full gap-4"):
-                            for category in recipe_categories:
+                            ui.label(
+                                "菜单是为你提供的可能，不是必须完成的任务。"
+                                "你可以自由选择、修改或跳过，按自己的方式生活。"
+                            ).classes(
+                                "w-full text-sm text-gray-500 leading-6"
+                            )
+
+                            with ui.grid(columns=2).classes("w-full gap-4"):
+                             for category in recipe_categories:
                                 with ui.card().classes(
                                         "w-full p-4 border border-gray-200 rounded-xl"
                                 ):
@@ -793,6 +915,10 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
                                         }[category]
                                     ).classes("text-xl font-bold")
 
+                                    recipe_match_labels[category] = ui.label(
+                                        "推荐匹配参考：等待计算……"
+                                    ).classes("text-xs text-blue-600")
+
                                     recipe_texts[category] = ui.label(
                                         "等待生成个性化建议……"
                                     ).classes("text-gray-700 whitespace-pre-wrap")
@@ -804,10 +930,33 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
 
 
                     async def request_recipe(category, time_text, preference, mood, interests):
+                        recent_feedback = [
+                                              record
+                                              for record in feedback_records
+                                              if record.get("category") == category
+                                          ][-5:]
+
+                        if recent_feedback:
+                            feedback_context = "\n".join(
+                                f"- 用户反馈：{record.get('choice')}；"
+                                f"体验评分：{record.get('score')}/5"
+                                for record in recent_feedback
+                            )
+                        else:
+                            feedback_context = "暂无该类别的历史反馈。"
                         prompt = f"""
                     请为“生命食谱”生成一份简洁、具体、可执行的生活方式建议。
 
                     【用户信息】
+                    【该类别的历史反馈】
+                    {feedback_context}
+
+                    请参考历史反馈调整建议：
+                    1. 对“不太适合”或低评分的反馈，尽量调整建议的形式或内容。
+                    2. 对“适合我”或高评分的反馈，可以保留相似的体验特点，但不要机械重复。
+                    3. “想换一个”表示用户希望获得替代方案，不代表用户永远排斥该类别。
+                    4. 历史反馈仅供参考，优先尊重用户本次填写的心情、兴趣与可用时间。
+                    5. 不要在回答中复述这些反馈记录。
                     可用时间：{time_text}
                     优先关注类别：{preference}
                     本次生成类别：{category}
@@ -821,24 +970,35 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
                         category, preference, mood, interests, time_text
                     )[1]}
                     
-                    
-                    
-                    
-                    
-                    
-                    
                     请将算法推荐依据作为辅助参考，而不是硬性要求。
                     优先保证本类别的核心目标，再结合兴趣进行个性化调整。
                     只有当兴趣与本类别自然相关时，才将其转化为具体行动；
                     如果关联较弱，可以不使用该兴趣，不要为了迎合兴趣而生硬套用。
                     
-                    
-                    
-
                     【项目理念】
                     “食谱”不仅指食物，也包括运动、休息、睡眠习惯、音乐、
                     阅读、影视、社交和兴趣活动等日常生活安排。
+                    
+                    【生命食谱的生活理念】
 
+你不仅要提供生活建议，也要尊重每个人选择自己人生菜单的权利。
+
+1. 尊重用户的自主选择。建议是邀请，不是命令；不要求用户完成每日清单，也不因用户拒绝建议而指责对方。
+
+2. 不以健康分数、匹配分数、任务完成次数衡量一个人的价值。算法只用于辅助推荐，不代表对用户本人的评价。
+
+3. 善良需要尊重边界。有时不必对他人负责到底，因为他们有自己的路要走；也不必对自己过于严苛，因为人可以休息、改变计划，也可以暂时什么都不做。
+
+4. 根据用户的心情、可用时间和兴趣提供切实可行的建议。兴趣与当前类别关联不大时，不要强行加入，也不要为了体现个性而重复提及同一兴趣。
+
+5. 允许生活有不同的滋味。建议可以简单、平凡、安静，不必刻意追求高效、完美或轰轰烈烈。
+
+这些理念应自然地体现在建议内容与表达方式中，不要逐条复述本规则，不要输出说教式的品牌宣言。
+                    
+                    
+                    
+                    
+                    
                     【生成要求】
                     1. 只生成“{category}”类别的建议，不要混入其他类别。
                     2. 必须考虑用户的可用时间、当前心情和兴趣活动。
@@ -890,9 +1050,27 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
                                 available_time.value,
                                 preferred_category.value,
                                 today_mood.value,
+                                get_category_interests(category,
                                 get_today_interests()
+                             )
                             )
                             recipe_texts[category].text = answer
+
+                            score, reason = calculate_match_score(
+                                category,
+                                preferred_category.value,
+                                today_mood.value,
+                                get_category_interests(
+                                    category,
+                                    get_today_interests()
+                                ),
+                                available_time.value
+                            )
+                            recipe_match_labels[category].text = (
+                                f"推荐匹配参考：{score}/100\n"
+                                f"推荐理由：{reason}"
+                            )
+
                             status_label.text = f"「{category}」已更新。"
                         except Exception as e:
                             print(f"[食谱生成错误] {type(e).__name__}: {e}", flush=True)
@@ -924,6 +1102,21 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
                             for category, answer in zip(recipe_categories, results):
                                 recipe_texts[category].text = answer
 
+                                score, reason = calculate_match_score(
+                                    category,
+                                    preferred_category.value,
+                                    today_mood.value,
+                                    get_category_interests(
+                                        category,
+                                        get_today_interests()
+                                    ),
+                                    available_time.value
+                                )
+                                recipe_match_labels[category].text = (
+                                    f"推荐匹配参考：{score}/100\n"
+                                    f"推荐理由：{reason}"
+                                )
+
                             status_label.text = "今日生活食谱已生成，可以单独替换任意类别。"
 
                         except Exception as e:
@@ -939,35 +1132,126 @@ with ui.column().classes("w-full min-h-screen p-6 gap-6"):
 
                     generate_button.on_click(generate_all)
 
-
-                # 反馈追踪演示模块
+                # 成长回响模块
                 with ui.tab_panel(t3):
                     with ui.card().classes(
-                        "p-6 bg-white shadow-sm rounded-2xl "
-                        "border border-slate-100 w-full gap-4"
+                            "p-6 bg-white shadow-sm rounded-2xl "
+                            "border border-slate-100 w-full gap-4"
                     ):
-                        ui.label("📊 反馈追踪").classes(
-                            "text-base font-bold text-slate-800"
-                        )
-                        ui.label(
-                            "当前尚未保存真实打卡记录。后续会支持完成、跳过、"
-                            "不喜欢和自定义反馈，并用于改善推荐。"
-                        ).classes("text-sm text-slate-500")
-                        ui.slider(
-                            min=0,
-                            max=100,
-                            value=50,
-                        ).classes("w-full")
-                        ui.button(
-                            "查看开发状态",
-                            on_click=lambda: ui.notify(
-                                "反馈持久化功能尚未接入数据库。",
-                                type="info",
-                            ),
-                        ).classes(
-                            "bg-blue-600 text-white font-medium px-6 py-2.5 rounded-xl"
+                        ui.label("🌱 成长回响").classes(
+                            "text-xl font-bold text-slate-800"
                         )
 
+                        ui.label(
+                            "你的感受，值得被认真对待。"
+                        ).classes(
+                            "text-base font-semibold text-slate-700"
+                        )
+
+                        ui.label(
+                            "每个人的生活都有自己的滋味。"
+                            "适合别人的建议，不一定适合你；"
+                            "不喜欢，可以拒绝；想改变，也随时可以重新选择。"
+                        ).classes(
+                            "text-sm text-slate-500 leading-6"
+                        )
+
+                        ui.separator()
+
+                        ui.label(
+                            "成长不必每天都有进步。"
+                        ).classes(
+                            "text-sm font-semibold text-slate-700"
+                        )
+
+                        ui.label(
+                            "有时向前走，有时停下来休息，也是一种生活。"
+                            "没有完成计划，不代表今天的你做得不够好。"
+                        ).classes(
+                            "text-sm text-slate-500 leading-6"
+                        )
+
+                        ui.label(
+                            "人生的方向，始终由你选择。"
+                        ).classes(
+                            "text-sm font-semibold text-slate-700"
+                        )
+
+                        ui.label(
+                            "生命食谱希望陪你探索更多可能，"
+                            "而不是替你决定应该怎样生活。"
+                        ).classes(
+                            "text-sm text-slate-500 leading-6"
+                        )
+
+                        ui.separator()
+                        feedback_category = ui.select(
+                            ["营养", "活力", "修复", "心灵"],
+                            value="心灵",
+                            label="这次反馈对应哪类建议",
+                        ).classes("w-full")
+
+                        ui.label(
+                            "🌿 今天的生活建议，适合你吗？"
+                        ).classes(
+                            "text-base font-bold text-slate-800"
+                        )
+
+                        feedback_choice = ui.radio(
+                            {
+                                "适合我": "适合我",
+                                "不太适合": "不太适合",
+                                "想换一个": "想换一个",
+                            },
+                            value="适合我",
+                        ).props("inline").classes("w-full")
+
+                        ui.label(
+                            "请为今天的建议打个分"
+                        ).classes("text-sm text-slate-600")
+
+                        feedback_score = ui.slider(
+                            min=1,
+                            max=5,
+                            value=3,
+                        ).props(
+                            "label-always"
+                        ).classes("w-full")
+
+                        feedback_records = []
+
+
+                        def submit_feedback():
+                            record = {
+                                "category": feedback_category.value,
+                                "choice": feedback_choice.value,
+                                "score": feedback_score.value,
+                            }
+
+                            feedback_records.append(record)
+
+                            ui.notify(
+                                "感谢你的真实反馈。"
+                                "你的选择值得被尊重。",
+                                type="positive",
+                            )
+
+
+                        ui.button(
+                            "🌱 提交反馈",
+                            on_click=submit_feedback,
+                        ).classes(
+                            "bg-blue-600 text-white font-medium "
+                            "px-6 py-2.5 rounded-xl"
+                        )
+
+                        ui.label(
+                            "你的反馈目前保存在本次运行的内存中。"
+                            "程序重启后会清空，暂未接入数据库，"
+                            "反馈是调整建议的参考，不是对你的固定判断。"
+                        ).classes(
+                            "text-xs text-slate-400 leading-5"
+                        )
 
 ui.run(
     port=8099,
